@@ -12,7 +12,7 @@
 """
 
 from agents.base import Agent, _Timed
-from notation import PASS, SUITS, card_suit, is_contract_bid, rank_value, same_side
+from bridge_core.notation import PASS, SUITS, card_suit, is_contract_bid, rank_value, same_side
 
 HCP = {"A": 4, "K": 3, "Q": 2, "J": 1}
 

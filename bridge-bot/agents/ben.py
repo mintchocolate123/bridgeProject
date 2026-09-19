@@ -1,6 +1,6 @@
 """以 BEN 的 REST API 作為決策模組。
 
-BEN 是無狀態的:每次請求都要帶完整的牌局資訊,輪次與贏墩由 Table 負責。
+BEN 是無狀態的:每次請求都要帶完整的牌局資訊,輪次與贏墩由裁判負責。
 
 注意事項(取自官方的網站整合指南):
   - 明手出牌時要送莊家的座位與手牌,明手的手牌放 dummy 參數,
@@ -14,16 +14,29 @@ import logging
 
 import requests
 
+from bridge_core.notation import hand_to_pbn, partner
+
 from agents.base import Agent, _Timed
-from notation import (
-    auction_to_ctx,
-    hand_to_pbn,
-    partner,
-    played_to_ben,
-    vul_to_ben,
-)
 
 log = logging.getLogger(__name__)
+
+
+# -- BEN 的參數格式 -----------------------------------------------------------
+# 只有 BEN 用得到,所以放在這裡,不放進共用的 bridge-core。
+
+def auction_to_ctx(auction):
+    """[{"seat":..,"bid":"1S"},...] -> "P-1S-P-3N" """
+    return "-".join(e["bid"] for e in auction)
+
+
+def played_to_ben(cards):
+    """依時間順序的出牌 ["DJ","DK"] -> "DJDK" """
+    return "".join(cards)
+
+
+def vul_to_ben(vulnerability):
+    """"none"/"NS"/"EW"/"both" -> BEN 的 vul 參數"""
+    return {"none": "", "NS": "NS", "EW": "EW", "both": "Both"}[vulnerability]
 
 
 class BenAgent(Agent):

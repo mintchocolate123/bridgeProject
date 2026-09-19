@@ -1,22 +1,23 @@
-"""複式橋牌計分。
+"""複式橋牌計分與 IMP 換算。"""
 
-BEN 的 /autoplay 會回傳分數,但混合牌桌是由本專案自行主持,所以計分
-也要自己算。這是純函式,沒有外部相依,容易驗證。
-"""
+from bridge_core.notation import is_vulnerable
 
 _TRICK_VALUE = {"C": 20, "D": 20, "H": 30, "S": 30, "N": 30}
 
+_IMP_TABLE = (20, 50, 90, 130, 170, 220, 270, 320, 370, 430, 500, 600, 750,
+              900, 1100, 1300, 1500, 1750, 2000, 2250, 2500, 3000, 3500, 4000)
+
 
 def contract_trick_score(level, strain):
-    """合約本身的基本墩分(未計加倍)。"""
+    """合約本身的基本墩分(未計加倍)。無王第一墩 40 分,之後每墩 30 分。"""
     score = level * _TRICK_VALUE[strain]
     if strain == "N":
-        score += 10          # 無王第一墩 40 分
+        score += 10
     return score
 
 
 def score_contract(level, strain, doubled, vulnerable, tricks):
-    """回傳莊家方的得分,負數代表倒墩罰分。
+    """莊家方的得分,負數代表倒墩罰分。
 
     level       1-7
     strain      C/D/H/S/N
@@ -33,23 +34,17 @@ def score_contract(level, strain, doubled, vulnerable, tricks):
     base = contract_trick_score(level, strain) * multiplier
     score = base
 
-    # 成局或部分分
-    if base >= 100:
-        score += 500 if vulnerable else 300
-    else:
-        score += 50
+    # 成局獎分或部分分
+    score += (500 if vulnerable else 300) if base >= 100 else 50
 
-    # 滿貫
+    # 滿貫獎分
     if level == 6:
         score += 750 if vulnerable else 500
     elif level == 7:
         score += 1500 if vulnerable else 1000
 
-    # 被加倍的補償
-    if doubled == "doubled":
-        score += 50
-    elif doubled == "redoubled":
-        score += 100
+    # 加倍後做成的補償
+    score += {"none": 0, "doubled": 50, "redoubled": 100}[doubled]
 
     # 超墩
     overtricks = tricks - needed
@@ -78,30 +73,26 @@ def _penalty(down, doubled, vulnerable):
     return total * (2 if doubled == "redoubled" else 1)
 
 
-def score_from_contract(contract, tricks, vulnerability="none"):
-    """用 GameState 的 contract dict 計分。
-
-    vulnerability 為 "none"/"NS"/"EW"/"both"
-    """
+def score_deal(contract, tricks, vulnerability):
+    """由合約與莊家方墩數計分,回傳 (莊家方得分, 南北得分)。流局兩者皆為 0。"""
     if contract is None:
-        return 0
+        return 0, 0
 
-    declarer_side = "NS" if contract["declarer"] in ("N", "S") else "EW"
-    vulnerable = vulnerability == "both" or vulnerability == declarer_side
-
-    return score_contract(contract["level"], contract["strain"],
-                          contract["doubled"], vulnerable, tricks)
+    declarer = contract["declarer"]
+    score = score_contract(contract["level"], contract["strain"],
+                           contract["doubled"],
+                           is_vulnerable(declarer, vulnerability), tricks)
+    ns_score = score if declarer in ("N", "S") else -score
+    return score, ns_score
 
 
 def imps(score_diff):
-    """分差換算成 IMP。用於兩組結果的比較。"""
-    table = [20, 50, 90, 130, 170, 220, 270, 320, 370, 430, 500, 600, 750,
-             900, 1100, 1300, 1500, 1750, 2000, 2250, 2500, 3000, 3500, 4000]
+    """分差換算成 IMP。複式賽比較兩桌同一副牌的結果時使用。"""
     sign = 1 if score_diff >= 0 else -1
     diff = abs(score_diff)
 
     result = 0
-    for i, threshold in enumerate(table):
+    for i, threshold in enumerate(_IMP_TABLE):
         if diff >= threshold:
             result = i + 1
         else:

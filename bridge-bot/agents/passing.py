@@ -5,7 +5,7 @@
 """
 
 from agents.base import Agent, _Timed
-from notation import PASS, rank_value
+from bridge_core.notation import PASS, rank_value
 
 
 class PassingAgent(Agent):

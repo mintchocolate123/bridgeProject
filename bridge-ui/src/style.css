@@ -1,0 +1,122 @@
+/* 全站樣式與顏色。顏色都用變數,深色模式只要換變數 */
+:root {
+  --bg: #f3f5f4;
+  --surface: #ffffff;
+  --text: #1c2521;
+  --muted: #66736d;
+  --line: #dde3e0;
+  --row-alt: #f1f4f2;
+  --accent: #1f8a5b;
+  --accent-strong: #146b45;
+  --accent-soft: #dcf1e6;
+  --info: #2a62b8;
+  --info-soft: #e0eafb;
+  --danger: #c53030;
+  --danger-soft: #fbe3e3;
+  --header-bg: #174d36;
+
+  --table-bg: #e3e9e6;
+  --felt: radial-gradient(circle at 50% 40%, #2e8a5c, #1c6040);
+  --felt-text: #e8f5ee;
+  --plate-bg: #2b3a34;
+  --plate-text: #fff;
+  --nonvul-plate: #4a5c55;
+  --vul-bg: #c53030;
+  --nonvul-bg: #e4e9e7;
+
+  --card-face: #ffffff;
+  --card-edge: #b9c2be;
+  --card-black: #1a1a1a;
+  --card-red: #d42a2a;
+  --back-a: #2a4d9b;
+  --back-b: #345cb3;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121715;
+    --surface: #1b2220;
+    --text: #e3ebe7;
+    --muted: #93a19a;
+    --line: #2c3632;
+    --row-alt: #222a27;
+    --accent: #2fa56f;
+    --accent-strong: #6fd6a5;
+    --accent-soft: #1d3a2d;
+    --info: #7fa9ec;
+    --info-soft: #1d2a40;
+    --danger: #f07474;
+    --danger-soft: #3c1f1f;
+    --header-bg: #0f3324;
+    --table-bg: #19201d;
+    --nonvul-bg: #2c3632;
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  line-height: 1.5;
+}
+a {
+  color: var(--accent);
+}
+button {
+  font: inherit;
+  padding: 5px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+button.text {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--text);
+}
+button.danger {
+  background: transparent;
+  border-color: var(--danger);
+  color: var(--danger);
+}
+input,
+select,
+textarea {
+  font: inherit;
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+}
+.muted {
+  color: var(--muted);
+}
+.notice {
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.notice.error {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.page.narrow {
+  max-width: 820px;
+  margin: 0 auto;
+}

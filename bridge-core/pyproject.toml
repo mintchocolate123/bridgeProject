@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bridge-core"
+version = "0.1.0"
+description = "橋牌裁判程式庫:規則、狀態機、計分。純邏輯,零相依。"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# 讓測試直接讀 src 底下的程式碼,不需要先 pip install 也能跑
+pythonpath = ["src"]

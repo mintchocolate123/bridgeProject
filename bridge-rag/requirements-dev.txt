@@ -1,0 +1,5 @@
+-r requirements.txt
+pytest
+# FastAPI 的 TestClient 需要:舊版 starlette 用 httpx,新版改用 httpx2
+httpx
+httpx2

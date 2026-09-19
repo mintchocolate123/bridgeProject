@@ -23,6 +23,8 @@ class RagAgent(Agent):
         self.timeout = timeout
         self.fallback = fallback          # 服務失效時改用的 agent
 
+        # 在讀到服務回報的版本之前,先用 port 當名稱
+        self._label = label
         port = urlparse(self.base_url).port
         self.name = f"rag:{label or port or self.base_url}"
 
@@ -70,12 +72,19 @@ class RagAgent(Agent):
         return data
 
     def health(self):
-        """啟動前確認服務活著,順便取得版本標記。"""
+        """啟動前確認服務活著,順便取得版本標記。
+
+        服務回報版本時,名稱改成 rag:<版本>,例如 rag:v2。決策紀錄與平台
+        上顯示的都是這個名稱,換了 port 也分得出是哪一版。
+        """
         try:
             r = requests.get(f"{self.base_url}/health", timeout=5)
-            return r.json() if r.ok else None
+            info = r.json() if r.ok else None
         except Exception:
             return None
+        if isinstance(info, dict) and info.get("version") and not self._label:
+            self.name = f"rag:{info['version']}"
+        return info
 
 
 def _short(message, limit=120):

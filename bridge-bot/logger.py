@@ -31,6 +31,8 @@ class DecisionLogger:
             "agent": meta.get("agent"),
             "fallback_used": meta.get("fallback_used", False),
             "latency_ms": meta.get("latency_ms"),
+            "error": meta.get("error"),
+            "room": meta.get("room"),          # 在平台上打的才有
         }
         line = json.dumps(record, ensure_ascii=False)
         with self._lock:

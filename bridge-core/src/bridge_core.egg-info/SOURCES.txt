@@ -1,0 +1,17 @@
+README.md
+pyproject.toml
+src/bridge_core/__init__.py
+src/bridge_core/boards.py
+src/bridge_core/deal.py
+src/bridge_core/errors.py
+src/bridge_core/notation.py
+src/bridge_core/rules.py
+src/bridge_core/score.py
+src/bridge_core.egg-info/PKG-INFO
+src/bridge_core.egg-info/SOURCES.txt
+src/bridge_core.egg-info/dependency_links.txt
+src/bridge_core.egg-info/requires.txt
+src/bridge_core.egg-info/top_level.txt
+tests/test_deal.py
+tests/test_rules.py
+tests/test_score.py

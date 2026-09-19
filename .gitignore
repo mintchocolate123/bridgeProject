@@ -1,20 +1,10 @@
-@'
+brydz/
+bridge-bot-old/
 .venv/
 __pycache__/
-*.pyc
-
-# 別人的專案,不納入版控
-brydz/
-
-# 實驗輸出
-decisions.jsonl
+.pytest_cache/
+node_modules/
+dist/
+data/
 runs/
-*.jsonl
-
-# 環境變數與金鑰
-.env
-
-# 編輯器
-.vscode/
-.idea/
-'@ | Out-File -FilePath .gitignore -Encoding utf8
+*.sqlite3
